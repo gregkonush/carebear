@@ -1,5 +1,6 @@
 import { JobListing } from "@/components";
 import { Inter, Libre_Baskerville } from "next/font/google";
+import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 const libre = Libre_Baskerville({
@@ -8,7 +9,31 @@ const libre = Libre_Baskerville({
   subsets: ["latin"],
 });
 
+type JobListing = {
+  id: string;
+  jobTitle: string;
+  facilityName: string;
+  location: {
+    city: string;
+    state: string;
+  };
+  rate: string;
+  shift?: string;
+};
+
 export default function Home() {
+  const [listings, setListings] = useState<JobListing[]>([]);
+  useEffect(() => {
+    const fetchListings = async () => {
+      const res = await fetch("/api/v1/listings");
+      const data = await res.json();
+      setListings(data.listings);
+    };
+    fetchListings();
+  }, []);
+
+  console.log(listings);
+
   return (
     <main
       className={`flex min-h-screen flex-col items-center ${inter.className} antialiased`}
@@ -23,42 +48,19 @@ export default function Home() {
       <section className="flex-grow bg-zinc-100/40 w-full py-10">
         <div className="flex flex-col items-center">
           <ol className="space-y-4">
-            <JobListing
-              jobTitle="Primary Care (Nurse Practioner)"
-              facilityName="Care Bear Hospital"
-              location="San Francisco, CA"
-              shift="Shift 1"
-            />
-            <JobListing
-              jobTitle="Primary Care (Nurse Practioner)"
-              facilityName="Care Bear Hospital"
-              location="San Francisco, CA"
-              shift="Shift 1"
-            />
-            <JobListing
-              jobTitle="Primary Care (Nurse Practioner)"
-              facilityName="Care Bear Hospital"
-              location="San Francisco, CA"
-              shift="Shift 1"
-            />
-            <JobListing
-              jobTitle="Primary Care (Nurse Practioner)"
-              facilityName="Care Bear Hospital"
-              location="San Francisco, CA"
-              shift="Shift 1"
-            />
-            <JobListing
-              jobTitle="Primary Care (Nurse Practioner)"
-              facilityName="Care Bear Hospital"
-              location="San Francisco, CA"
-              shift="Shift 1"
-            />
-            <JobListing
-              jobTitle="Primary Care (Nurse Practioner)"
-              facilityName="Care Bear Hospital"
-              location="San Francisco, CA"
-              shift="Shift 1"
-            />
+            {listings.map(
+              ({ id, jobTitle, facilityName, location, rate, shift }) => (
+                <li key={id}>
+                  <JobListing
+                    jobTitle={jobTitle}
+                    facilityName={facilityName}
+                    location={`${location.city}, ${location.state}`}
+                    rate={rate}
+                    shift={shift}
+                  />
+                </li>
+              )
+            )}
           </ol>
         </div>
       </section>

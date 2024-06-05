@@ -18,11 +18,13 @@ export function JobListing({
   facilityName,
   location,
   shift,
+  rate,
 }: {
   jobTitle: string;
   facilityName: string;
   location: string;
-  shift: string;
+  shift: string | undefined;
+  rate: string;
 }) {
   return (
     <Card className="text-sm w-[400px]">
@@ -46,9 +48,7 @@ export function JobListing({
         </div>
       </CardHeader>
       <CardContent className="flex flex-row space-x-2 items-center justify-between space-y-1 px-4">
-        <div className="text-xl font-semibold text-emerald-500/80">
-          $84/hour
-        </div>
+        <div className="text-xl font-semibold text-emerald-500/80">{rate}</div>
         <Button className="bg-emerald-500 text-white">
           I&lsquo;m interested
         </Button>

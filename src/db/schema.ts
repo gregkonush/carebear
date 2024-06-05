@@ -1,33 +1,48 @@
 import { sql } from "drizzle-orm";
-import {
-  integer,
-  pgEnum,
-  pgTable,
-  serial,
-  uniqueIndex,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { pgTable, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const jobListings = pgTable("job_listings", {
-  id: uuid("id").primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
   jobTitle: varchar("job_title", { length: 255 }).notNull(),
-  facility: varchar("facility", { length: 255 }).notNull(),
-  location: varchar("location", { length: 255 }).notNull(),
-  description: varchar("description", { length: 255 }).notNull(),
-  createdAt: serial("created_at").notNull(),
-  updatedAt: serial("updated_at").notNull(),
+  facilityId: uuid("facility_id").notNull(),
+  rate: varchar("rate", { length: 255 }),
+  shift: varchar("shift", { length: 255 }).notNull(),
+  description: varchar("description").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const jobListingsRelations = relations(jobListings, ({ one }) => ({
+  facility: one(facilities, {
+    fields: [jobListings.facilityId],
+    references: [facilities.id],
+  }),
+}));
 
 export const facilities = pgTable("facilities", {
-  id: uuid("id").primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
-  location: varchar("location", { length: 255 }).notNull(),
-  createdAt: serial("created_at").notNull(),
-  updatedAt: serial("updated_at").notNull(),
+  locationId: uuid("location_id").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const facilityRelations = relations(facilities, ({ many }) => ({
+export const facilityRelations = relations(facilities, ({ many, one }) => ({
   jobListings: many(jobListings),
+  location: one(locations, {
+    fields: [facilities.locationId],
+    references: [locations.id],
+  }),
 }));
+
+export const locations = pgTable(
+  "locations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    city: varchar("city", { length: 255 }).notNull(),
+    state: varchar("state", { length: 255 }).notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  }
+);
