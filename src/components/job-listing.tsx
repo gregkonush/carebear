@@ -28,14 +28,14 @@ export function JobListing({
     <Card className="text-sm w-[400px]">
       <CardHeader className="p-4">
         <CardTitle className="text-lg">{jobTitle}</CardTitle>
-        <CardDescription>
+        <div className="text-gray-500">
           <div className="flex flex-row justify-between">
             <div className="flex flex-row items-center space-x-1">
               <HomeIcon />
               <div>{facilityName}</div>
             </div>
             <div className="flex flex-row items-center space-x-1 ">
-              <SewingPinFilledIcon className="text-orange-300" />
+              <SewingPinFilledIcon />
               <div>{location}</div>
             </div>
             <div className="flex flex-row space-x-1 items-center">
@@ -43,7 +43,7 @@ export function JobListing({
               <div>{shift}</div>
             </div>
           </div>
-        </CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="flex flex-row space-x-2 items-center justify-between space-y-1 px-4">
         <div className="text-xl font-semibold text-emerald-500/80">
