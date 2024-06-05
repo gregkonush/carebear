@@ -31,3 +31,5 @@ Seed database with data
 ```bash
 bun seed
 ```
+
+![Screenshot](image.png)
